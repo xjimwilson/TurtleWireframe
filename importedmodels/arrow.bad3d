@@ -1,0 +1,19 @@
+.draw position should be displayed as x,y,z,draw
+.use . for comments
+.seperate each value with a comma
+
+.start from midpoint touching bottom of box template
+0,-25,0,0
+0,80,0,1
+-10,60,0,1
+10,60,0,1
+0,80,0,1
+0,60,10,1
+0,60,-10,1
+0,80,0,1
+.reached arrow tip
+-10,60,0,0
+0,60,-10,1
+10,60,0,1
+0,60,10,1
+-10,60,0,1

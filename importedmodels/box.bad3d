@@ -1,0 +1,25 @@
+.welcome to the first bad3d model
+
+.draw position should be displayed as (x,y,z,draw)
+.use . for comments
+.seperate each value with a comma
+
+-50,-25,-50,0
+-50,-25,50,1
+50,-25,50,1
+50,-25,-50,1
+-50,-25,-50,1
+
+.end of square base
+
+-50,25,-50,1
+-50,25,50,1
+-50,-25,50,1
+-50,25,50,0
+50,25,50,1
+50,-25,50,1
+50,25,50,0
+50,25,-50,1
+50,-25,-50,1
+50,25,-50,0
+-50,25,-50,1
