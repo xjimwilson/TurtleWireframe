@@ -85,10 +85,11 @@ def render():
 
 def drawimport():
     importedvals = readandextract(shared.filename) #reads the .bad3d file
+    print(shared.linetype)
     if shared.linetype == "draw":
         for x, y, z, d in importedvals:
             calculaterender(x,y,z,rotx,roty,d)
-    if shared.linetype == "size":
+    elif shared.linetype == "size":
         print("yea")
         t.pensize(shared.linesize)
 

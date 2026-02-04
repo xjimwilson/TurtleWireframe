@@ -9,14 +9,18 @@ def readandextract(filename):
             if not line or line.startswith('.'):
                 continue
             if line.startswith("linesize"):
-                shared.linesize = int(line[9:])
-                if type(shared.linesize) == str:
-                    print(f"ERROR: line {line}, Linesize given as string (should be value)")
                 shared.linetype = "size"
+                print("found linesize")
+                try:
+                    shared.linesize = int((line[8:]).strip())
+                    print(shared.linesize)
+                except:
+                    print("couldnt change linesize shared variable")
             else:
                 values = [float(p) for p in line.split(",") if p.strip()]
                 if len(values) == 4:
-                    draw.append(tuple(values))
                     shared.linetype = "draw"
+                    draw.append(tuple(values))
+                    
     return draw
 
