@@ -12,8 +12,12 @@ t.hideturtle()
 rotx, roty = 30, 30
 xoffset, yoffset, zoffset = 0, 0, 0
 speed = 0.6
-zoom = 2.0
+zoom = 3.5
+pennormalizescale = 0.6
+
 showgrid = True
+showaxis = False
+keylifted = True
 
 print("render init OK!")
 
@@ -54,7 +58,7 @@ def control():
         if zoom < 20:
             zoom *= 1.01 
     if kb.is_pressed("o"):
-        if zoom > 0.1:
+        if zoom > 0.5:
             zoom /= 1.01 
 
 
@@ -72,38 +76,62 @@ def control():
     if kb.is_pressed("h"):
         showgrid = False
 
+    #axis
+    if kb.is_pressed("a") and keylifted == True:
+        showaxis = True
+        keylifted = False
+    if not kb.is_pressed("a"):
+        keylifted = True
+        showaxis = False
     
+def pensizescaled(size):
+    t.pensize(size*pennormalizescale*zoom)
 
 def render():
 
     t.clear()
 
+    drawgrid() # draw grid before import so depth is correct
     drawimport()
-    drawgrid()
 
     screen.update()
 
 def drawimport():
-    importedvals = readandextract(shared.filename) #reads the .bad3d file
-    print(shared.linetype)
-    if shared.linetype == "draw":
-        for x, y, z, d in importedvals:
-            calculaterender(x,y,z,rotx,roty,d)
-    elif shared.linetype == "size":
-        print("yea")
-        t.pensize(shared.linesize)
+    commands = readandextract(shared.filename) #reads the .bad3d file
+    # commands is a list of ("size", int) or ("draw", (x,y,z,drawflag))
+
+    pensizescaled(1)
+    t.color("gray10")
+
+    for cmd in commands:
+        if cmd[0] == "size":
+            pensizescaled(cmd[1])
+        elif cmd[0] == "draw":
+            x, y, z, d = cmd[1]
+            calculaterender(x, y, z, rotx, roty, d)
 
 def drawgrid():
     if showgrid == True:
-        importedvals = readandextract("floorgrid.bad3d")
-        for x, y, z, d in importedvals:
-            t.color("lightgrey")
-            calculaterender(x,y,z,rotx,roty,d)
-            t.color("black")
+        
+
+        if zoom > 5:
+            commands = readandextract("floorgrid/floorgridsmall.bad3d")
+        elif zoom > 2:
+            commands = readandextract("floorgrid/floorgridnormal.bad3d")
+        else:
+            commands = readandextract("floorgrid/floorgridlarge.bad3d")
+
+        t.pensize(1)
+
+        for cmd in commands:
+            if cmd[0] == "draw":
+                x, y, z, d = cmd[1]
+                t.color("lightgrey")
+                calculaterender(x, y, z, rotx, roty, d)
 
 
 def drawaxis():
-    t.pensize(2)
+    pensizescaled(2)
     # X axis
     t.color("red")
     calculaterender(0,0,0,rotx,roty,0)
@@ -131,8 +159,6 @@ def drawaxis():
     t.goto(pos[0], pos[1])
     t.pendown()
 
-    t.color("black")
-    t.pensize(1)   
-
+    t.color("black") 
     
 #INPUTS--------------------------------------------------------------------------------------------

@@ -2,7 +2,9 @@
 .use . for comments
 .seperate each value with a comma
 
+
 .DETAILEDBOX
+linesize 4
 -50,-25,-50,0
 -50,-25,50,1
 50,-25,50,1
@@ -21,6 +23,7 @@
 50,25,-50,0
 -50,25,-50,1
 .drawing a cross on top and bottom of box for detail/clarity
+linesize 2
 50,25,50,1
 -50,25,50,0
 50,25,-50,1
@@ -29,6 +32,7 @@
 -50,-25,50,0
 50,-25,-50,1
 .drawing a cross on box sides because why not
+linesize 1
 50,25,50,1
 50,-25,50,0
 50,25,-50,1
@@ -47,6 +51,7 @@
 
 .ARROW
 .start from midpoint touching bottom of box template
+linesize 3
 0,-25,0,0
 0,80,0,1
 -10,60,0,1

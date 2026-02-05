@@ -1,26 +1,50 @@
 import shared
 print("importer OK!")
 
+def checkfileexists(filename):
+    try:
+        open(f"importedmodels/{filename}")
+        passed = True
+        
+    except:
+        print(f"File {filename} could not be opened (does it exist? is it in /importedmodels directory?)")
+        passed = False
+
+    return passed
+
 def readandextract(filename):
-    draw = []
+    """
+    Returns an ordered list of commands:
+      - ("size", int)
+      - ("draw", (x, y, z, drawflag))
+    This preserves the file order so the renderer can process commands sequentially.
+    """
+    commands = []
+
     with open(f"importedmodels/{filename}", "r") as f:
         for line in f:
-            line = line.replace(" ","")
+            # Normalize and skip comments / blank lines
+            line = line.replace(" ", "").strip()
             if not line or line.startswith('.'):
                 continue
+
             if line.startswith("linesize"):
-                shared.linetype = "size"
-                print("found linesize")
                 try:
-                    shared.linesize = int((line[8:]).strip())
-                    print(shared.linesize)
-                except:
-                    print("couldnt change linesize shared variable")
+                    currentlinesize = int(line[len("linesize"):].strip())
+                    commands.append(("size", currentlinesize))
+                except Exception:
+                    print("couldnt get currentlinesize")
             else:
-                values = [float(p) for p in line.split(",") if p.strip()]
-                if len(values) == 4:
-                    shared.linetype = "draw"
-                    draw.append(tuple(values))
-                    
-    return draw
+                # parse draw tuple: x,y,z,draw
+                parts = [p for p in line.split(",") if p.strip()]
+                try:
+                    currentvalues = [float(p) for p in parts]
+                except Exception:
+                    # skip malformed line
+                    continue
+
+                if len(currentvalues) == 4:
+                    commands.append(("draw", tuple(currentvalues)))
+
+    return commands
 
