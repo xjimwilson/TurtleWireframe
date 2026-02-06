@@ -10,6 +10,9 @@ ok so i didnt do anything with deltatime like i said i would, but i managed to H
 
 next update ill polish LODs, because now i have more performance to spare. Also, I would like to eventually make an editor for the .bad3d filetype.
 
+
+
+
 # Beta-0.35
 
 i started to get back into this project again. this is what i changed:
