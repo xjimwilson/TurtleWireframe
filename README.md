@@ -7,6 +7,7 @@ ok so i didnt do anything with deltatime like i said i would, but i managed to H
 - Added pyautogui canvas for future gui updates
 - changed from arrow key movement to mouse movement
 - cleaned up code a little bit
+- added an axis because why not
 
 next update ill polish LODs, because now i have more performance to spare. Also, I would like to eventually make an editor for the .bad3d filetype.
 
