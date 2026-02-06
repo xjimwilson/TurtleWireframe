@@ -1,16 +1,26 @@
 #SETUP---------------------------------------------------------------------------------------------
 from RENDEREQUATION import calculate
 from bad3dreader import readandextract
-import turtle as t
+import tkinter as tk
+from turtle import RawTurtle, TurtleScreen
 import keyboard as kb
 import shared
 
-screen = t.Screen()
+root = tk.Tk()
+canvas = tk.Canvas(root, width=800, height=600)
+canvas.pack()
+
+
+screen = TurtleScreen(canvas)
+
+t = RawTurtle(screen)
+
 screen.tracer(0)
 t.hideturtle()
 
-rotx, roty = 30, 30
+rotx, roty = 30.0, 30.0
 xoffset, yoffset, zoffset = 0, 0, 0
+dy, dx = 0,0
 speed = 0.6
 zoom = 3.5
 pennormalizescale = 0.6
@@ -18,6 +28,29 @@ pennormalizescale = 0.6
 showgrid = True
 showaxis = False
 keylifted = True
+
+def initmousebind():
+
+    def on_click_tk(event):
+        # event.x / event.y are canvas coords
+        global startx, starty
+        startx, starty = event.x, event.y
+
+    def on_drag_tk(event):
+        global startx, starty, dx, dy
+        # calculate displacement relative to last press/previous drag
+        dx += (event.x - (startx or 0)) * speed
+        dy += (event.y - (starty or 0)) * speed
+        print(f"Displacement: dx={dx}, dy={dy}")
+
+        startx, starty = event.x, event.y
+
+    
+    canvas.bind("<Button-1>", on_click_tk)
+    canvas.bind("<B1-Motion>", on_drag_tk)
+
+initmousebind()
+
 
 print("render init OK!")
 
@@ -36,21 +69,11 @@ def calculaterender(x,y,z,xrot,yrot,draw):
     t.penup()
 
 def control():
-    global rotx, roty, speed, zoom, showgrid
+    global rotx, roty, speed, zoom, showgrid, keylifted, showaxis
 
-    #rotationmouse
-    
-
-
-    #rotationkeyboard
-    if kb.is_pressed("up"):
-        rotx -= speed
-    if kb.is_pressed("down"):
-        rotx += speed
-    if kb.is_pressed("right"):
-        roty -= speed
-    if kb.is_pressed("left"):
-        roty += speed
+    if dy or dx > 0:
+        rotx = dy * speed
+        roty = dx * speed
 
 
     #zoom
@@ -93,6 +116,7 @@ def render():
 
     drawgrid() # draw grid before import so depth is correct
     drawimport()
+    drawaxis()
 
     screen.update()
 
@@ -131,34 +155,37 @@ def drawgrid():
 
 
 def drawaxis():
-    pensizescaled(2)
-    # X axis
-    t.color("red")
-    calculaterender(0,0,0,rotx,roty,0)
-    calculaterender(100,0,0,rotx,roty,1)
-    t.penup()
-    pos = calculate(110, 0, 0, rotx, roty)
-    t.goto(pos[0], pos[1])
-    t.pendown()
 
-    # Y axis
-    t.color("green")
-    calculaterender(0,0,0,rotx,roty,0)
-    calculaterender(0,100,0,rotx,roty,1)
-    t.penup()
-    pos = calculate(0, 110, 0, rotx, roty)
-    t.goto(pos[0], pos[1])
-    t.pendown()
+    if showaxis == True:
+        pensizescaled(3)
+        # X axis
+        t.color("red")
+        calculaterender(0,0,0,rotx,roty,0)
+        calculaterender(100,0,0,rotx,roty,1)
+        t.penup()
+        pos = calculate(110, 0, 0, rotx, roty)
+        t.goto(pos[0], pos[1])
+        t.pendown()
 
-    # Z axis
-    t.color("blue")
-    calculaterender(0,0,0,rotx,roty,0)
-    calculaterender(0,0,100,rotx,roty,1)
-    t.penup()
-    pos = calculate(0, 0, 110, rotx, roty)
-    t.goto(pos[0], pos[1])
-    t.pendown()
+        # Y axis
+        t.color("green")
+        calculaterender(0,0,0,rotx,roty,0)
+        calculaterender(0,100,0,rotx,roty,1)
+        t.penup()
+        pos = calculate(0, 110, 0, rotx, roty)
+        t.goto(pos[0], pos[1])
+        t.pendown()
 
-    t.color("black") 
+        # Z axis
+        t.color("blue")
+        calculaterender(0,0,0,rotx,roty,0)
+        calculaterender(0,0,100,rotx,roty,1)
+        t.penup()
+        pos = calculate(0, 0, 110, rotx, roty)
+        t.goto(pos[0], pos[1])
+        t.pendown()
+
+        t.color("black") 
     
-#INPUTS--------------------------------------------------------------------------------------------
+
+
