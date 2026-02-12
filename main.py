@@ -1,4 +1,4 @@
-from render import render, control, screen
+from render import initTurtleCanvas, initmousebind, render, control, initTurtleCanvas, initmousebind
 import time
 import shared
 
@@ -25,8 +25,11 @@ else:
 
 print("import OK!")
 
-print("render initalising...")
-while running:
+initTurtleCanvas()
+initmousebind()
 
+print("render initalising...")
+print("\n\nPress P to open preferences menu...")
+while running:
     control()
     render()
